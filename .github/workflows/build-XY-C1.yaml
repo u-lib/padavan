@@ -28,7 +28,7 @@ jobs:
              zip git fakeroot kmod cpio automake autopoint texinfo build-essential \
              help2man pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev \
              libncurses-dev libncurses5-dev libltdl-dev liblzma-dev wget libc-dev-bin \
-             python3-docutils gettext ccache python-is-python3
+             python3-docutils gettext ccache python-is-python3 libxml2-dev
       - name: Build
         env:
          FAKEROOT_DONT_TRY_CHOWN: "1"
