@@ -1,0 +1,40 @@
+name: build-XY-C1
+
+on: 
+  #push:
+   # branches:
+   # - "*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        target: [XY-C1]
+        toolchain: [mipsel-linux-musl]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: dev
+      - uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ matrix.target }}-${{ matrix.toolchain }}
+      - name: Prepare
+        run: |
+          sudo apt update
+          sudo apt install -y \
+             unzip nano bc libtool-bin curl cmake gperf gawk flex bison xxd \
+             zip git fakeroot kmod cpio automake autopoint texinfo build-essential \
+             help2man pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev \
+             libncurses-dev libncurses5-dev libltdl-dev liblzma-dev wget libc-dev-bin \
+             python3-docutils gettext ccache python-is-python3
+      - name: Build
+        env:
+         FAKEROOT_DONT_TRY_CHOWN: "1"
+        run: |
+          make ${{ matrix.target }} TOOLCHAIN=${{ matrix.toolchain }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}-${{ matrix.toolchain }}
+          path: trunk/images/*.trx
